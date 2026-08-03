@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Question {
+  id             String           @id
+  sourceOrder    Int              @unique
+  theme          String
+  prompt         String           @unique
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+  QuestionOption QuestionOption[]
+
+  @@index([theme])
+}
+
+model LifePurchase {
+  id            String   @id
+  paymentId     String   @unique
+  clerkUserId   String
+  livesGranted  Int      @default(1)
+  amountInCents Int
+  status        String
+  rawPayload    Json?
+  createdAt     DateTime @default(now())
+
+  @@index([clerkUserId])
+}
+
+model Player {
+  id              String        @id
+  clerkUserId     String        @unique
+  displayName     String?
+  bestScore       Int           @default(0)
+  lastScore       Int           @default(0)
+  lastCorrect     Int           @default(0)
+  lastTime        Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime
+  avatarUrl       String?
+  bestTimeSeconds Int?
+  lives           Int           @default(1)
+  nextLifeAt      DateTime?
+  QuizAttempt     QuizAttempt[]
+}
+
+model QuestionOption {
+  id         String   @id
+  questionId String
+  text       String
+  isCorrect  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+}
+
+model QuizAttempt {
+  id             String   @id
+  playerId       String
+  score          Int
+  totalQuestions Int      @default(100)
+  createdAt      DateTime @default(now())
+  timeSeconds    Int?
+  Player         Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([score])
+}
