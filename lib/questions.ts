@@ -124,7 +124,7 @@ export const QUESTIONS: QuizQuestion[] = [
   { id: 100, question: "Quem compôs 'Para Elisa'?", options: ["Mozart", "Bach", "Beethoven", "Schubert"], correctAnswer: 2, category: "Arte e Música" },
 ]
 
-export function shuffleQuestions(questions: QuizQuestion[]): QuizQuestion[] {
+export function shuffleQuestions<T>(questions: T[]): T[] {
   const arr = [...questions]
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
