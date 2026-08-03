@@ -17,11 +17,11 @@ export async function GET() {
     })
 
     if (dbQuestions.length > 0) {
-      const mapped = dbQuestions.map(q => ({
+      const mapped = dbQuestions.map((q: typeof dbQuestions[number]) => ({
         id: q.id,
         question: q.prompt,
-        options: q.QuestionOption.map(o => o.text),
-        correctAnswer: q.QuestionOption.findIndex(o => o.isCorrect),
+        options: q.QuestionOption.map((o: { text: string }) => o.text),
+        correctAnswer: q.QuestionOption.findIndex((o: { isCorrect: boolean }) => o.isCorrect),
         category: q.theme,
       }))
       return Response.json(
