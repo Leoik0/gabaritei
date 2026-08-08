@@ -1,6 +1,6 @@
 ﻿import { createHmac } from 'crypto'
 import { prisma } from '@/lib/prisma'
-import { QUESTIONS, shuffleQuestions } from '@/lib/questions'
+import { QUESTIONS, QuizQuestion, shuffleQuestions } from '@/lib/questions'
 
 const secret = process.env.QUIZ_SECRET ?? 'dev-only-change-in-production'
 
@@ -17,8 +17,8 @@ export async function GET() {
     })
 
     if (dbQuestions.length > 0) {
-      const mapped = dbQuestions.map((q: typeof dbQuestions[number]) => ({
-        id: q.id,
+      const mapped: QuizQuestion[] = dbQuestions.map((q: typeof dbQuestions[number]) => ({
+        id: q.id as unknown as number,
         question: q.prompt,
         options: q.QuestionOption.map((o: { text: string }) => o.text),
         correctAnswer: q.QuestionOption.findIndex((o: { isCorrect: boolean }) => o.isCorrect),
