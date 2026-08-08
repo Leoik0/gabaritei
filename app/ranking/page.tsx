@@ -1,6 +1,7 @@
 ﻿import Image from 'next/image'
 import Link from 'next/link'
 import { Trophy, Home } from 'lucide-react'
+import { prisma } from '@/lib/prisma'
 
 interface RankEntry {
   id: string
@@ -12,12 +13,17 @@ interface RankEntry {
 
 async function getRanking(): Promise<RankEntry[]> {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-    const res = await fetch(`${baseUrl}/api/ranking`, { cache: 'no-store' })
-    if (!res.ok) return []
-    return res.json()
+    return await prisma.player.findMany({
+      orderBy: { bestScore: 'desc' },
+      take: 20,
+      select: {
+        id: true,
+        displayName: true,
+        avatarUrl: true,
+        bestScore: true,
+        bestTimeSeconds: true,
+      },
+    })
   } catch {
     return []
   }
